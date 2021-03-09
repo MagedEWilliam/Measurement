@@ -1,0 +1,100 @@
+<div class="fields">
+  <div class="field-wrapper">
+    <p class="field">Unit: </p><input id="unit" type="text" value="cm" />
+  </div>
+  <div class="field-wrapper">
+    <p class="field">Factor: </p><input id="factor" type="text" value="1" />
+  </div>
+</div>
+
+<div class="options">
+<button class="primary" id="recalculate">Recalculate</button>
+<button id="create">New measurement</button>
+<button id="cancel">Close</button>
+<div class="">
+  <label class="">
+    <input id="extension_line" class="" type="checkbox">
+  </label>
+  <label class="" for="extension_line">With Extension line</label>
+</div>
+
+</div>
+
+<style>
+  body {
+    padding: 16px;
+    font: normal 400 11px/16px Inter, Roboto, sans-serif;
+  }
+  .options{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .field-wrapper{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+  }
+  .field{
+    display: inline;
+    min-width: 40px;
+  }
+  .fields{
+    display: flex;
+    flex-direction: column;
+  }
+  #unit,
+  #factor{
+  height: 24px;
+  color: #333;
+  border: 1px solid #e5e5e5;
+  padding: 8px;
+  resize: none;
+  font-size: 14px;
+  font-family: monospace;
+}
+  button {
+  border-radius: 5px;
+  background: white;
+  color: black;
+  border: none;
+  padding: 6px 10px;
+  margin: 0 0 6px 0px;
+  box-shadow: inset 0 0 0 1px black;
+  outline: none;
+}
+button:focus {
+  box-shadow: inset 0 0 0 2px #18A0FB;
+}
+button:last-child {
+  margin-left: 16px;
+}
+.primary:focus {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
+}
+.primary {
+  box-shadow: none;
+  background: #18A0FB;
+  color: white;
+}
+</style>
+
+<script>
+  document.getElementById("create").onclick = () => {
+    const unit = document.getElementById("unit").value;
+    const factor = Number(document.getElementById("factor").value);
+    const withExtensionLine = document.getElementById("extension_line").checked;
+    parent.postMessage({ pluginMessage: { type: "create", unit, factor, withExtensionLine } }, "*");
+  };
+  
+  document.getElementById("recalculate").onclick = () => {
+    const unit = document.getElementById("unit").value;
+    const factor = Number(document.getElementById("factor").value);
+    parent.postMessage({ pluginMessage: { type: "recalculate", unit, factor } }, "*");
+  };
+
+  document.getElementById("cancel").onclick = () => {
+    parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+  };
+</script>

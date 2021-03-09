@@ -1,0 +1,14 @@
+{
+  "name": "Measurement",
+  "version": "1.0.0",
+  "description": "Add Measurements to your design, like CAD sketches",
+  "main": "code.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.19.2"
+  }
+}
