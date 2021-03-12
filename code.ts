@@ -1,4 +1,4 @@
-// This plugin will open a window to prompt the user to enter a unit and a factor,
+// This plugin will open a window to prompt the user to enter a unit and a precision,
 // and it will then create that many measurements on the screen.
 
 // This file holds the main code for the plugins. It has access to the *document*.
@@ -25,13 +25,13 @@ figma.ui.onmessage = async (msg) => {
         get_text.deleteCharacters(0, get_text.characters.length);
         get_text.insertCharacters(
           get_text.characters.length,
-          Math.round(node.width * msg.factor).toString() + msg.unit,
+          Number(node.width * msg.precision).toFixed(msg.fixed).toString() + msg.unit,
           "BEFORE"
         );
 
         node.name =
           "<-" +
-          Math.round(node.width * msg.factor).toString() +
+          Number(node.width * msg.precision).toFixed(msg.fixed).toString() +
           msg.unit +
           "->";
       }
