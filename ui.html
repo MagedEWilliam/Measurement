@@ -7,14 +7,14 @@
     <p class="field">Factor:</p>
     <input
       placeholder="1.00 or 0.100 ..."
-      id="precision"
+      id="factor"
       type="text"
       value="1.0"
     />
   </div>
   <div class="field-wrapper">
     <p class="field">Precision:</p>
-    <input placeholder="1 or 2 ..." id="fixed" type="number" value="2" />
+    <input placeholder="1 or 2 ..." id="precision" type="number" value="2" />
   </div>
 </div>
 
@@ -66,9 +66,9 @@
     display: flex;
     flex-direction: column;
   }
-  #fixed,
+  #precision,
   #unit,
-  #precision {
+  #factor {
     height: 24px;
     color: #333;
     border: 1px solid #e5e5e5;
@@ -109,16 +109,16 @@
 <script>
   document.getElementById("create").onclick = () => {
     const unit = document.getElementById("unit").value;
-    const precision = Number(document.getElementById("precision").value);
-    const fixed = Number(document.getElementById("fixed").value);
+    const factor = document.getElementById("factor").value;
+    const precision = document.getElementById("precision").value;
     const withExtensionLine = document.getElementById("extension_line").checked;
     parent.postMessage(
       {
         pluginMessage: {
           type: "create",
           unit,
+          factor,
           precision,
-          fixed,
           withExtensionLine,
         },
       },
@@ -128,15 +128,34 @@
 
   document.getElementById("recalculate").onclick = () => {
     const unit = document.getElementById("unit").value;
-    const precision = Number(document.getElementById("precision").value);
-    const fixed = Number(document.getElementById("fixed").value);
+    const factor = document.getElementById("factor").value;
+    const precision = document.getElementById("precision").value;
+    const withExtensionLine = document.getElementById("extension_line").checked;
     parent.postMessage(
-      { pluginMessage: { type: "recalculate", unit, precision, fixed } },
+      { pluginMessage: { type: "recalculate", unit, factor, precision, withExtensionLine } },
       "*"
     );
   };
 
   document.getElementById("cancel").onclick = () => {
-    parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+    const unit = document.getElementById("unit").value;
+    const factor = document.getElementById("factor").value;
+    const precision = document.getElementById("precision").value;
+    const withExtensionLine = document.getElementById("extension_line").checked;
+    parent.postMessage(
+      { pluginMessage: { type: "cancel", unit, factor, precision, withExtensionLine } },
+      "*"
+    );
   };
+
+  // check if cookies are set
+  window.onmessage = async event => {
+    const message = event.data.pluginMessage
+    if (message.type === 'measurement_clientStorage') {
+      document.getElementById("extension_line").checked = message.withExtensionLine;
+      document.getElementById("unit").value = message.unit;
+      document.getElementById("factor").value = message.factor;
+      document.getElementById("precision").value = message.precision;
+    }
+  }
 </script>

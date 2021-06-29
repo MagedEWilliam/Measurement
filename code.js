@@ -14,6 +14,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // full browser environment (see documentation).
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__);
+(() => __awaiter(this, void 0, void 0, function* () {
+    const raw_measurement_options = yield figma.clientStorage.getAsync('measurement_options');
+    const measurement_options = JSON.parse(raw_measurement_options);
+    figma.ui.postMessage(Object.assign({ type: 'measurement_clientStorage' }, measurement_options));
+}))();
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
 // posted message.
@@ -27,13 +32,19 @@ figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
                 yield figma.loadFontAsync({ family: "Roboto", style: "Regular" });
                 get_text.autoRename = true;
                 get_text.deleteCharacters(0, get_text.characters.length);
-                get_text.insertCharacters(get_text.characters.length, Number(node.width * msg.precision).toFixed(msg.fixed).toString() + msg.unit, "BEFORE");
+                get_text.insertCharacters(get_text.characters.length, Number(node.width * Number(msg.factor)).toFixed(Number(msg.precision)).toString() + msg.unit, "BEFORE");
                 node.name =
                     "<-" +
-                        Number(node.width * msg.precision).toFixed(msg.fixed).toString() +
+                        Number(node.width * Number(msg.factor)).toFixed(Number(msg.precision)).toString() +
                         msg.unit +
                         "->";
             }
+        }));
+        yield figma.clientStorage.setAsync('measurement_options', JSON.stringify({
+            unit: msg.unit,
+            factor: msg.factor,
+            precision: msg.precision,
+            withExtensionLine: msg.withExtensionLine,
         }));
     }
     // Create, Will create a new measurement.
@@ -93,10 +104,22 @@ figma.ui.onmessage = (msg) => __awaiter(this, void 0, void 0, function* () {
         measurement.x = figma.viewport.center.x - (measurement.width / 2);
         measurement.y = figma.viewport.center.y - (measurement.height / 2);
         measurement.layoutMode = "VERTICAL";
+        yield figma.clientStorage.setAsync('measurement_options', JSON.stringify({
+            unit: msg.unit,
+            factor: msg.factor,
+            precision: msg.precision,
+            withExtensionLine: msg.withExtensionLine,
+        }));
     }
     // This makes sure to close the plugin when you're done. Otherwise the plugin will
     // keep running, which shows the cancel button at the bottom of the screen.
     if (msg.type === "cancel") {
+        yield figma.clientStorage.setAsync('measurement_options', JSON.stringify({
+            unit: msg.unit,
+            factor: msg.factor,
+            precision: msg.precision,
+            withExtensionLine: msg.withExtensionLine,
+        }));
         figma.closePlugin();
     }
 });

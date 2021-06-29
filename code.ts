@@ -8,6 +8,16 @@
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__);
 
+
+(async () => {
+  const raw_measurement_options = await figma.clientStorage.getAsync('measurement_options');
+  const measurement_options = JSON.parse(raw_measurement_options);
+  figma.ui.postMessage({
+    type: 'measurement_clientStorage',
+    ...measurement_options
+  });
+})();
+
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
 // posted message.
@@ -25,17 +35,24 @@ figma.ui.onmessage = async (msg) => {
         get_text.deleteCharacters(0, get_text.characters.length);
         get_text.insertCharacters(
           get_text.characters.length,
-          Number(node.width * msg.precision).toFixed(msg.fixed).toString() + msg.unit,
+          Number(node.width * Number(msg.factor)).toFixed(Number(msg.precision)).toString() + msg.unit,
           "BEFORE"
         );
 
         node.name =
           "<-" +
-          Number(node.width * msg.precision).toFixed(msg.fixed).toString() +
+          Number(node.width * Number(msg.factor)).toFixed(Number(msg.precision)).toString() +
           msg.unit +
           "->";
       }
     });
+
+    await figma.clientStorage.setAsync('measurement_options', JSON.stringify({
+      unit: msg.unit,
+      factor: msg.factor,
+      precision: msg.precision,
+      withExtensionLine: msg.withExtensionLine,
+    }));
   }
 
   // Create, Will create a new measurement.
@@ -107,11 +124,25 @@ figma.ui.onmessage = async (msg) => {
     measurement.x = figma.viewport.center.x - (measurement.width/2);
     measurement.y = figma.viewport.center.y - (measurement.height/2);
     measurement.layoutMode = "VERTICAL";
+
+    await figma.clientStorage.setAsync('measurement_options', JSON.stringify({
+      unit: msg.unit,
+      factor: msg.factor,
+      precision: msg.precision,
+      withExtensionLine: msg.withExtensionLine,
+    }));
   }
 
   // This makes sure to close the plugin when you're done. Otherwise the plugin will
   // keep running, which shows the cancel button at the bottom of the screen.
   if (msg.type === "cancel") {
+    await figma.clientStorage.setAsync('measurement_options', JSON.stringify({
+      unit: msg.unit,
+      factor: msg.factor,
+      precision: msg.precision,
+      withExtensionLine: msg.withExtensionLine,
+    }));
+    
     figma.closePlugin();
   }
 };
