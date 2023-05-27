@@ -1,6 +1,7 @@
 {
   "name": "Measurement",
   "id": "949750262028441524",
+  "editorType": ["figma"],
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html"

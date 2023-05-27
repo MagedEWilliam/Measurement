@@ -1,161 +1,303 @@
-<div class="fields">
-  <div class="field-wrapper">
-    <p class="field">Unit:</p>
-    <input id="unit" type="text" value="px" />
-  </div>
-  <div class="field-wrapper">
-    <p class="field">Factor:</p>
-    <input
-      placeholder="1.00 or 0.100 ..."
-      id="factor"
-      type="text"
-      value="1.0"
-    />
-  </div>
-  <div class="field-wrapper">
-    <p class="field">Precision:</p>
-    <input placeholder="1 or 2 ..." id="precision" type="number" value="2" />
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Measurement</title>
+  </head>
+  <body>
+    <div class="page">
+      <div class="fields">
+        <label class="field-wrapper">
+          <p class="field">Unit:</p>
+          <input id="unit" type="text" value="px" tabindex="1"/>
+        </label>
+        <label class="field-wrapper">
+          <p class="field">Factor:</p>
+          <input
+            placeholder="1.00 or 0.100 ..."
+            id="factor"
+            type="text"
+            value="1.0"
+            tabindex="2"
+          />
+        </label>
+        <label class="field-wrapper">
+          <p class="field">Precision:</p>
+          <input
+            placeholder="1 or 2 ..."
+            id="precision"
+            type="number"
+            value="2"
+            tabindex="3"
+          />
+        </label>
+        <label class="field-wrapper">
+          <p class="field">Line Width:</p>
+          <input
+            placeholder="1.0 or 3.0 ..."
+            id="lineWidth"
+            type="number"
+            value="1.0"
+            tabindex="4"
+          />
+        </label>
 
-<div class="options">
-  <button class="primary" id="recalculate">Recalculate</button>
-  <button id="create">New measurement</button>
-  <button id="cancel">Close</button>
-  <div class="">
-    <label class="">
-      <input id="extension_line" class="" type="checkbox" />
-    </label>
-    <label class="" for="extension_line">With Extension line</label>
-  </div>
-</div>
+        <button class="primary" id="recalculate" tabindex="0">Recalculate</button>
+      </div>
 
-<style>
-  body {
-    margin: 4px 8px;
-    padding: 16px;
-    font: normal 400 11px/16px Inter, Roboto, sans-serif;
-  }
-  .options {
-    margin-top: 4px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  .field-wrapper {
-    margin-bottom: 4px;
-    max-height: 24px;
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: row;
-    align-items: center;
-  }
+      <div class="options">
+        <div class="me-grid">
+          <img alt=""src id="left-line" class="dir" tabindex="6"/>
+          <img
+            alt=""
+          src
+            id="right-line"
+            class="dir"
+            tabindex="7"
+          />
+    
+          <img alt=""src id="top-line" class="dir" tabindex="8"/>
+          <img alt=""src id="bottom-line" class="dir" tabindex="9"/>
+        </div>
 
-  .field-wrapper.multi div:nth-child(1) {
-    margin: 0px 20px;
-  }
-  .field-wrapper.multi input {
-    max-width: 52px;
-  }
-  .field {
-    text-align: center;
-    display: inline;
-    margin-right: 6px;
-  }
-  .fields {
-    display: flex;
-    flex-direction: column;
-  }
-  #precision,
-  #unit,
-  #factor {
-    height: 24px;
-    color: #333;
-    border: 1px solid #e5e5e5;
-    padding: 8px;
-    resize: none;
-    font-size: 14px;
-    font-family: monospace;
-  }
-  #unit {
-    min-width: 180px;
-  }
-  button {
-    border-radius: 5px;
-    background: white;
-    color: black;
-    border: none;
-    padding: 6px 10px;
-    margin: 0 0 6px 0px;
-    box-shadow: inset 0 0 0 1px black;
-    outline: none;
-  }
-  button:focus {
-    box-shadow: inset 0 0 0 2px #18a0fb;
-  }
-  button:last-child {
-    margin-left: 16px;
-  }
-  .primary:focus {
-    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
-  }
-  .primary {
-    box-shadow: none;
-    background: #18a0fb;
-    color: white;
-  }
-</style>
+        <label class="extension_line" for="extension_line">
+          <input id="extension_line" class="" type="checkbox" tabindex="5"/>
+          With Extension line
+        </label>
 
-<script>
-  document.getElementById("create").onclick = () => {
-    const unit = document.getElementById("unit").value;
-    const factor = document.getElementById("factor").value;
-    const precision = document.getElementById("precision").value;
-    const withExtensionLine = document.getElementById("extension_line").checked;
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: "create",
-          unit,
-          factor,
-          precision,
-          withExtensionLine,
-        },
-      },
-      "*"
-    );
-  };
+        <button id="create" tabindex="10">New measurement</button>
+      </div>
+    </div>
 
-  document.getElementById("recalculate").onclick = () => {
-    const unit = document.getElementById("unit").value;
-    const factor = document.getElementById("factor").value;
-    const precision = document.getElementById("precision").value;
-    const withExtensionLine = document.getElementById("extension_line").checked;
-    parent.postMessage(
-      { pluginMessage: { type: "recalculate", unit, factor, precision, withExtensionLine } },
-      "*"
-    );
-  };
+    <style>
+      body {
+        margin: 4px 8px;
+        padding: 0px;
+        font: normal 400 11px/16px Inter, Roboto, sans-serif;
+      }
+      .page {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr 1fr;
+      }
+      .options {
+        margin-top: 4px;
+        display: grid;
+        grid-template-columns: auto;
+      }
+      .me-grid {
+        width: 100%;
+        height: 100px;
+        display: grid;
+        grid-template-rows: 40px 24px 40px;
+        grid-template-columns: 40px 24px 40px;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        justify-items: center;
+      }
 
-  document.getElementById("cancel").onclick = () => {
-    const unit = document.getElementById("unit").value;
-    const factor = document.getElementById("factor").value;
-    const precision = document.getElementById("precision").value;
-    const withExtensionLine = document.getElementById("extension_line").checked;
-    parent.postMessage(
-      { pluginMessage: { type: "cancel", unit, factor, precision, withExtensionLine } },
-      "*"
-    );
-  };
+      .field-wrapper {
+        margin-bottom: 4px;
+        max-height: 24px;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: row;
+        align-items: center;
+      }
 
-  // check if cookies are set
-  window.onmessage = async event => {
-    const message = event.data.pluginMessage
-    if (message.type === 'measurement_clientStorage') {
-      document.getElementById("extension_line").checked = message.withExtensionLine;
-      document.getElementById("unit").value = message.unit;
-      document.getElementById("factor").value = message.factor;
-      document.getElementById("precision").value = message.precision;
-    }
-  }
-</script>
+      .field-wrapper.multi div:nth-child(1) {
+        margin: 0px 20px;
+      }
+      .field-wrapper.multi input {
+        max-width: 50px;
+      }
+      .field {
+        text-align: center;
+        display: inline;
+        margin-right: 6px;
+        max-width: 100px;
+        overflow: hidden;
+        user-select: none;
+      }
+      .fields {
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+      }
+      #precision,
+      #unit,
+      #lineWidth,
+      #factor {
+        max-width: 80px;
+        height: 24px;
+        color: #333;
+        border: 1px solid #e5e5e5;
+        padding: 0px 4px;
+        resize: none;
+        font-size: 14px;
+        font-family: monospace;
+      }
+      #unit {
+        max-width: 80px;
+        min-width: 80px;
+      }
+      .me-x {
+        min-height: 100px;
+        max-width: 250px;
+      }
+      .dir {
+        width: 40px;
+        transition: opacity 200ms;
+        opacity: 0.2;
+      }
+      .dir:hover {
+        opacity: 0.5;
+      }
+      .dir.selected {
+        opacity: 1;
+      }
+      #left-line {
+        grid-row: 2;
+        grid-column: 1;
+        background-position: -2%;
+      }
+      #top-line {
+        grid-row: 1;
+        grid-column: 2;
+        background-position: 50% -8%;
+        transform: rotateZ(90deg);
+      }
+      #right-line {
+        grid-row: 2;
+        grid-column: 3;
+        background-position: 104%;
+        margin: 0;
+        transform: rotateZ(180deg);
+      }
+      #bottom-line {
+        grid-row: 3;
+        grid-column: 2;
+        background-position: 50% 107%;
+        transform: rotateZ(-90deg);
+      }
+
+      button {
+        border-radius: 5px;
+        background: white;
+        color: black;
+        border: none;
+        padding: 6px 10px;
+        margin: 0 0 6px 0px;
+        box-shadow: inset 0 0 0 1px black;
+        outline: none;
+      }
+      button:focus {
+        box-shadow: inset 0 0 0 2px #18a0fb;
+      }
+
+      .primary:focus {
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
+      }
+      .primary {
+        box-shadow: none;
+        background: #18a0fb;
+        color: white;
+      }
+      .extension_line {
+        user-select: none;
+      }
+    </style>
+
+    <script>
+      let selectedID = 'left-line';
+
+      const recalculate = () => {
+        const unit = document.getElementById("unit").value;
+        const factor = document.getElementById("factor").value;
+        const precision = document.getElementById("precision").value;
+        const lineWidth = document.getElementById("lineWidth").value;
+        const withExtensionLine =
+          document.getElementById("extension_line").checked;
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "recalculate",
+              unit,
+              factor,
+              precision,
+              withExtensionLine,
+              lineWidth,
+              selectedID
+            },
+          },
+          "*"
+        );
+      };
+
+      document.getElementById("create").onclick = () => {
+        const unit = document.getElementById("unit").value;
+        const factor = document.getElementById("factor").value;
+        const precision = document.getElementById("precision").value;
+        const lineWidth = document.getElementById("lineWidth").value;
+        const withExtensionLine =
+          document.getElementById("extension_line").checked;
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "create",
+              unit,
+              factor,
+              precision,
+              withExtensionLine,
+              lineWidth,
+              selectedID
+            },
+          },
+          "*"
+        );
+      };
+
+      const dirPrep = ()=>{
+        document.querySelectorAll(".dir").forEach(el=>{
+          // because i didn't find a way to import images
+          // i had to encode the image
+          el.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA2CAYAAAC1ItuGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAK0SURBVHgB7ZpLaxRBFIVPHmo0kyFKFMTXRkRRFyo+lgq+I+hfUPC3+BcEf4DgTlAICr4QIYqPnRshJC404gNM1EwU4zncah1MZqbrzqRSi3xw6E7oZs5U36que+90IZ6t1GXqTcnrD1CbqRvUTeoHIuhFHLr+CnWOOkM9KXHPe6qH+hVrzsNJ6hM1R92mukvcs51aTa3AIjMIMzUXNEOdRUZcpKbwz6A0SlWwiPSUvG4NdR4WR9MwU/eob9QYNY44FBp7qI+wL9oRVlF9wehYOJdaxVY13Ps/+2CTrWkclwnyghos7mrh75mgny3uO0itXeD/L6mvsNWgtxMGvTRbyh5T76gTjbzEroOd5jf1itqCBrG41AaFTDacZCke8WvqA5ykMDgBG6UY+hG8pTDoYTdsdnfnavApbHZfSGFwPcq/sep5QQ2kMLgfZtLDeK6PuOBB7gazncV/SfEmeQbbonkYSmHwM/wML8dgu6QwOARLGTx8SbVQV+FjRJPkCHWYegvbPOolrWToDiytVD5xHf5g74KfWRnU8OsxKCFXgl28OzW6G8N5Fe3NxqSchmV1ZVE1YgN8VFLEoMLGu6M+lcKge7uPRCPYFrkbrKUwqILnSvi4lcLgLmodfEwvx2Cb9OVucDjFhvURNQsflRQGvZX9o9Rkro/4WDiO5FB+W4j7xUmKEVSXaQBOUhhUpaofTnKIQXnYi0xr1Pp8bWiV2C9ZjbpRq6Iwp2ajNrVtGdTwV+qOYjActQh/b3LvaDBZjxKp43XmYkvE81BidRXWfFFFfiqcP4ctqLHI4DZ0eA6obaV0tL6Z+BD+vV7HUV9O+XFhTq+wQ8gMVQkmYQavodwj2gFLOzfBkcTHFrdlTt1NdSovwdqprdAo7wyfNYFIPGUJVRvUki27S5E5jeBdOH5U8Qdb/npzrXResgAAAABJRU5ErkJggg==';
+          
+          if(el.id == selectedID){ 
+            el.classList.add('selected')
+          }
+
+          el.onclick = (e) => {
+            document.querySelectorAll(".dir").forEach(_el=>{
+              _el.classList.remove('selected');
+            });
+            e.target.classList.toggle('selected')
+            selectedID = e.target.id;
+            recalculate();
+          }
+        })
+      };
+
+      document.getElementById("recalculate").onclick = ()=> recalculate();
+
+      // check if cookies are set
+      window.onmessage = async (event) => {
+        const msg = event.data.pluginMessage;
+        // if so; populate settings from cookies
+        if (msg.type === "measurement_clientStorage") {
+          document.getElementById("extension_line").checked =
+            msg.withExtensionLine;
+          document.getElementById("unit").value = msg.unit;
+          document.getElementById("factor").value = msg.factor;
+          document.getElementById("precision").value = msg.precision;
+          document.getElementById("lineWidth").value = msg.lineWidth? msg.lineWidth : 1;
+          selectedID = msg.selectedID? msg.selectedID : 'left-line';
+          dirPrep();
+        }
+      };
+    </script>
+  </body>
+</html>
