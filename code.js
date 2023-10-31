@@ -156,37 +156,38 @@ const createLine = (msg) => __awaiter(this, void 0, void 0, function* () {
         // @ts-ignore
         yield figma.loadFontAsync(dimensionText.fontName);
         dimensionText.fills = [color];
+        const unit = msg.unit;
         if (msg.selectedID == 'left-line') {
             measurement.resize(node.height, 78);
             measurement.x = node.x - measurement.height;
             measurement.y = node.y + node.height;
-            measurement.name = "<-" + node.height + "px->";
-            yield dimensionText.insertCharacters(0, node.height + "px");
-            // dimensionText.characters =  node.height+"px";
+            measurement.name = "<-" + node.height + unit + "->";
+            yield dimensionText.insertCharacters(0, node.height + unit);
+            // dimensionText.characters =  node.height + unit;
         }
         else if (msg.selectedID == 'right-line') {
             measurement.resize(node.height, 78);
             measurement.x = node.x + node.width + (measurement.height);
             measurement.y = node.y;
-            measurement.name = "<-" + node.height + "px->";
-            yield dimensionText.insertCharacters(0, node.height + "px");
-            // await dimensionText.characters = node.height+"px";
+            measurement.name = "<-" + node.height + unit + "->";
+            yield dimensionText.insertCharacters(0, node.height + unit);
+            // await dimensionText.characters = node.height + unit;
         }
         else if (msg.selectedID == 'bottom-line') {
             measurement.resize(node.width, 60);
             measurement.x = node.x + node.width;
             measurement.y = node.y + node.height + (measurement.height);
-            measurement.name = "<-" + node.width + "px->";
-            yield dimensionText.insertCharacters(0, node.width + "px");
-            // await dimensionText.characters = node.width+"px";
+            measurement.name = "<-" + node.width + unit + "->";
+            yield dimensionText.insertCharacters(0, node.width + unit);
+            // await dimensionText.characters = node.width + unit;
         }
         else if (msg.selectedID == 'top-line') {
             measurement.resize(node.width, 60);
             measurement.x = node.x;
             measurement.y = node.y - measurement.height;
-            measurement.name = "<-" + node.width + "px->";
-            yield dimensionText.insertCharacters(0, node.width + "px");
-            // await dimensionText.characters = node.width+"px";
+            measurement.name = "<-" + node.width + unit + "->";
+            yield dimensionText.insertCharacters(0, node.width + unit);
+            // await dimensionText.characters = node.width + unit;
         }
     }));
     measurement.layoutMode = "VERTICAL";
