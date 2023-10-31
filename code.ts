@@ -49,8 +49,10 @@ const recalculate = async(msg)=>{
         node.fills = [color];
 
         if (node) {
+
+          console.log(selectionNode.width, selectionNode.height)
           const updatedText = 
-          Number(node.width * Number(msg.factor))
+          Number(selectionNode.width * Number(msg.factor))
             .toFixed(Number(msg.precision))
             .toString() + msg.unit;
           
@@ -65,7 +67,7 @@ const recalculate = async(msg)=>{
           node.characters = updatedText;
 
           const textName = "<-" +
-          Number(node.width * Number(msg.factor))
+          Number(selectionNode.width * Number(msg.factor))
             .toFixed(Number(msg.precision))
             .toString() +
           msg.unit +
@@ -75,19 +77,21 @@ const recalculate = async(msg)=>{
           selectionNode.name =textName
         }
       } else {
-        node.children.filter(async(dimNode) => {
-          dimNode.strokes = [color];
-          dimNode.strokeWeight = Number(msg.lineWidth)
+        if (node) {
+          node.children.filter(async(dimNode) => {
+            dimNode.strokes = [color];
+            dimNode.strokeWeight = Number(msg.lineWidth)
 
-          if(dimNode.name.includes('ExtensionLine_')){
-            if(msg.withExtensionLine){
-              dimNode.opacity = 1
-            }else{
-              dimNode.opacity = 0
+            if(dimNode.name.includes('ExtensionLine_')){
+              if(msg.withExtensionLine){
+                dimNode.opacity = 1
+              }else{
+                dimNode.opacity = 0
+              }
+            } else {
             }
-          } else {
-          }
-        });
+          });
+        }
       }
     });
   });

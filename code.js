@@ -40,7 +40,8 @@ const recalculate = (msg) => __awaiter(this, void 0, void 0, function* () {
                 yield figma.loadFontAsync(node.fontName);
                 node.fills = [color];
                 if (node) {
-                    const updatedText = Number(node.width * Number(msg.factor))
+                    console.log(selectionNode.width, selectionNode.height);
+                    const updatedText = Number(selectionNode.width * Number(msg.factor))
                         .toFixed(Number(msg.precision))
                         .toString() + msg.unit;
                     node.autoRename = true;
@@ -48,7 +49,7 @@ const recalculate = (msg) => __awaiter(this, void 0, void 0, function* () {
                     node.insertCharacters(node.characters.length, updatedText, "BEFORE");
                     node.characters = updatedText;
                     const textName = "<-" +
-                        Number(node.width * Number(msg.factor))
+                        Number(selectionNode.width * Number(msg.factor))
                             .toFixed(Number(msg.precision))
                             .toString() +
                         msg.unit +
@@ -58,20 +59,22 @@ const recalculate = (msg) => __awaiter(this, void 0, void 0, function* () {
                 }
             }
             else {
-                node.children.filter((dimNode) => __awaiter(this, void 0, void 0, function* () {
-                    dimNode.strokes = [color];
-                    dimNode.strokeWeight = Number(msg.lineWidth);
-                    if (dimNode.name.includes('ExtensionLine_')) {
-                        if (msg.withExtensionLine) {
-                            dimNode.opacity = 1;
+                if (node) {
+                    node.children.filter((dimNode) => __awaiter(this, void 0, void 0, function* () {
+                        dimNode.strokes = [color];
+                        dimNode.strokeWeight = Number(msg.lineWidth);
+                        if (dimNode.name.includes('ExtensionLine_')) {
+                            if (msg.withExtensionLine) {
+                                dimNode.opacity = 1;
+                            }
+                            else {
+                                dimNode.opacity = 0;
+                            }
                         }
                         else {
-                            dimNode.opacity = 0;
                         }
-                    }
-                    else {
-                    }
-                }));
+                    }));
+                }
             }
         }));
     });
