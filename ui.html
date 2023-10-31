@@ -7,11 +7,30 @@
     <title>Measurement</title>
   </head>
   <body>
-    <div class="page">
+    <!-- tabs -->
+    <div class="tabs">
+      <div class="tab active" id="page">Measurement</div>
+      <!-- <div class="tab" id="saved">Presets</div> -->
+    </div>
+
+    <div class="tab-content saved" id="saved-content">
+      <div>
+        <input placeholder="Save current" id="preset-name" type="text" />
+        <input placeholder="PX or MM or ..." id="preset-Unit" type="text" />
+        <input placeholder="Precision" id="preset-Precision" type="text" />
+        <input placeholder="lineWidth" id="preset-lineWidth" type="text" />
+        <input placeholder="lineColor" id="preset-lineColor" type="color" />
+        <input value="Save" id="save-btn" type="button" />
+        <input value="Like" id="like-btn" type="button" />
+        <input value="Delete" id="delete-btn" type="button" />
+      </div>
+    </div>
+
+    <div class="tab-content page active" id="page-content">
       <div class="fields">
         <label class="field-wrapper">
           <p class="field">Unit:</p>
-          <input id="unit" type="text" value="px" tabindex="1"/>
+          <input id="unit" type="text" value="px" tabindex="1" />
         </label>
         <label class="field-wrapper">
           <p class="field">Factor:</p>
@@ -31,6 +50,7 @@
             type="number"
             value="2"
             tabindex="3"
+            min="0"
           />
         </label>
         <label class="field-wrapper">
@@ -41,29 +61,31 @@
             type="number"
             value="1.0"
             tabindex="4"
+            min="1"
           />
         </label>
 
-        <button class="primary" id="recalculate" tabindex="0">Recalculate</button>
+        <label class="field-wrapper">
+          <p class="field">color:</p>
+          <input id="lineColor" type="color" value="#000000" tabindex="5" />
+        </label>
+
+        <button class="primary" id="recalculate" tabindex="0">
+          Recalculate
+        </button>
       </div>
 
       <div class="options">
         <div class="me-grid">
-          <img alt=""src id="left-line" class="dir" tabindex="6"/>
-          <img
-            alt=""
-          src
-            id="right-line"
-            class="dir"
-            tabindex="7"
-          />
-    
-          <img alt=""src id="top-line" class="dir" tabindex="8"/>
-          <img alt=""src id="bottom-line" class="dir" tabindex="9"/>
+          <img alt="" src id="left-line" class="dir" tabindex="6" />
+          <img alt="" src id="right-line" class="dir" tabindex="7" />
+
+          <img alt="" src id="top-line" class="dir" tabindex="8" />
+          <img alt="" src id="bottom-line" class="dir" tabindex="9" />
         </div>
 
         <label class="extension_line" for="extension_line">
-          <input id="extension_line" class="" type="checkbox" tabindex="5"/>
+          <input id="extension_line" class="" type="checkbox" tabindex="5" />
           With Extension line
         </label>
 
@@ -73,7 +95,7 @@
 
     <style>
       body {
-        margin: 4px 8px;
+        margin: 0px;
         padding: 0px;
         font: normal 400 11px/16px Inter, Roboto, sans-serif;
       }
@@ -86,7 +108,13 @@
         margin-top: 4px;
         display: grid;
         grid-template-columns: auto;
+        flex-basis: 50%;
       }
+      #recalculate,
+      #create {
+        margin-top: 8px;
+      }
+
       .me-grid {
         width: 100%;
         height: 100px;
@@ -126,12 +154,16 @@
         display: flex;
         justify-content: flex-end;
         flex-direction: column;
+        flex-basis: 50%;
       }
+
+      #lineColor,
       #precision,
       #unit,
       #lineWidth,
       #factor {
         max-width: 80px;
+        width: 100%;
         height: 24px;
         color: #333;
         border: 1px solid #e5e5e5;
@@ -209,16 +241,50 @@
       .extension_line {
         user-select: none;
       }
+      .tabs {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        background-color: #e5e5e5;
+        padding: 4px;
+        gap: 4px;
+        padding-bottom: 0px;
+        margin-bottom: 0px;
+      }
+      .tab {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 4px;
+        flex-basis: 50%;
+        user-select: none;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
+      .tab.active {
+        background-color: white;
+      }
+      .tab-content {
+        margin: 4px 8px;
+        display: none;
+      }
+      .active {
+        display: flex;
+      }
     </style>
 
     <script>
-      let selectedID = 'left-line';
+      let selectedID = "left-line";
 
       const recalculate = () => {
         const unit = document.getElementById("unit").value;
         const factor = document.getElementById("factor").value;
         const precision = document.getElementById("precision").value;
         const lineWidth = document.getElementById("lineWidth").value;
+        const lineColor = document.getElementById("lineColor").value;
         const withExtensionLine =
           document.getElementById("extension_line").checked;
         parent.postMessage(
@@ -230,7 +296,8 @@
               precision,
               withExtensionLine,
               lineWidth,
-              selectedID
+              selectedID,
+              lineColor,
             },
           },
           "*"
@@ -242,6 +309,7 @@
         const factor = document.getElementById("factor").value;
         const precision = document.getElementById("precision").value;
         const lineWidth = document.getElementById("lineWidth").value;
+        const lineColor = document.getElementById("lineColor").value;
         const withExtensionLine =
           document.getElementById("extension_line").checked;
         parent.postMessage(
@@ -253,35 +321,37 @@
               precision,
               withExtensionLine,
               lineWidth,
-              selectedID
+              selectedID,
+              lineColor,
             },
           },
           "*"
         );
       };
 
-      const dirPrep = ()=>{
-        document.querySelectorAll(".dir").forEach(el=>{
+      const dirPrep = () => {
+        document.querySelectorAll(".dir").forEach((el) => {
           // because i didn't find a way to import images
           // i had to encode the image
-          el.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA2CAYAAAC1ItuGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAK0SURBVHgB7ZpLaxRBFIVPHmo0kyFKFMTXRkRRFyo+lgq+I+hfUPC3+BcEf4DgTlAICr4QIYqPnRshJC404gNM1EwU4zncah1MZqbrzqRSi3xw6E7oZs5U36que+90IZ6t1GXqTcnrD1CbqRvUTeoHIuhFHLr+CnWOOkM9KXHPe6qH+hVrzsNJ6hM1R92mukvcs51aTa3AIjMIMzUXNEOdRUZcpKbwz6A0SlWwiPSUvG4NdR4WR9MwU/eob9QYNY44FBp7qI+wL9oRVlF9wehYOJdaxVY13Ps/+2CTrWkclwnyghos7mrh75mgny3uO0itXeD/L6mvsNWgtxMGvTRbyh5T76gTjbzEroOd5jf1itqCBrG41AaFTDacZCke8WvqA5ykMDgBG6UY+hG8pTDoYTdsdnfnavApbHZfSGFwPcq/sep5QQ2kMLgfZtLDeK6PuOBB7gazncV/SfEmeQbbonkYSmHwM/wML8dgu6QwOARLGTx8SbVQV+FjRJPkCHWYegvbPOolrWToDiytVD5xHf5g74KfWRnU8OsxKCFXgl28OzW6G8N5Fe3NxqSchmV1ZVE1YgN8VFLEoMLGu6M+lcKge7uPRCPYFrkbrKUwqILnSvi4lcLgLmodfEwvx2Cb9OVucDjFhvURNQsflRQGvZX9o9Rkro/4WDiO5FB+W4j7xUmKEVSXaQBOUhhUpaofTnKIQXnYi0xr1Pp8bWiV2C9ZjbpRq6Iwp2ajNrVtGdTwV+qOYjActQh/b3LvaDBZjxKp43XmYkvE81BidRXWfFFFfiqcP4ctqLHI4DZ0eA6obaV0tL6Z+BD+vV7HUV9O+XFhTq+wQ8gMVQkmYQavodwj2gFLOzfBkcTHFrdlTt1NdSovwdqprdAo7wyfNYFIPGUJVRvUki27S5E5jeBdOH5U8Qdb/npzrXResgAAAABJRU5ErkJggg==';
-          
-          if(el.id == selectedID){ 
-            el.classList.add('selected')
+          el.src =
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA2CAYAAAC1ItuGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAK0SURBVHgB7ZpLaxRBFIVPHmo0kyFKFMTXRkRRFyo+lgq+I+hfUPC3+BcEf4DgTlAICr4QIYqPnRshJC404gNM1EwU4zncah1MZqbrzqRSi3xw6E7oZs5U36que+90IZ6t1GXqTcnrD1CbqRvUTeoHIuhFHLr+CnWOOkM9KXHPe6qH+hVrzsNJ6hM1R92mukvcs51aTa3AIjMIMzUXNEOdRUZcpKbwz6A0SlWwiPSUvG4NdR4WR9MwU/eob9QYNY44FBp7qI+wL9oRVlF9wehYOJdaxVY13Ps/+2CTrWkclwnyghos7mrh75mgny3uO0itXeD/L6mvsNWgtxMGvTRbyh5T76gTjbzEroOd5jf1itqCBrG41AaFTDacZCke8WvqA5ykMDgBG6UY+hG8pTDoYTdsdnfnavApbHZfSGFwPcq/sep5QQ2kMLgfZtLDeK6PuOBB7gazncV/SfEmeQbbonkYSmHwM/wML8dgu6QwOARLGTx8SbVQV+FjRJPkCHWYegvbPOolrWToDiytVD5xHf5g74KfWRnU8OsxKCFXgl28OzW6G8N5Fe3NxqSchmV1ZVE1YgN8VFLEoMLGu6M+lcKge7uPRCPYFrkbrKUwqILnSvi4lcLgLmodfEwvx2Cb9OVucDjFhvURNQsflRQGvZX9o9Rkro/4WDiO5FB+W4j7xUmKEVSXaQBOUhhUpaofTnKIQXnYi0xr1Pp8bWiV2C9ZjbpRq6Iwp2ajNrVtGdTwV+qOYjActQh/b3LvaDBZjxKp43XmYkvE81BidRXWfFFFfiqcP4ctqLHI4DZ0eA6obaV0tL6Z+BD+vV7HUV9O+XFhTq+wQ8gMVQkmYQavodwj2gFLOzfBkcTHFrdlTt1NdSovwdqprdAo7wyfNYFIPGUJVRvUki27S5E5jeBdOH5U8Qdb/npzrXResgAAAABJRU5ErkJggg==";
+
+          if (el.id == selectedID) {
+            el.classList.add("selected");
           }
 
           el.onclick = (e) => {
-            document.querySelectorAll(".dir").forEach(_el=>{
-              _el.classList.remove('selected');
+            document.querySelectorAll(".dir").forEach((_el) => {
+              _el.classList.remove("selected");
             });
-            e.target.classList.toggle('selected')
+            e.target.classList.toggle("selected");
             selectedID = e.target.id;
             recalculate();
-          }
-        })
+          };
+        });
       };
 
-      document.getElementById("recalculate").onclick = ()=> recalculate();
+      document.getElementById("recalculate").onclick = () => recalculate();
 
       // check if cookies are set
       window.onmessage = async (event) => {
@@ -293,11 +363,29 @@
           document.getElementById("unit").value = msg.unit;
           document.getElementById("factor").value = msg.factor;
           document.getElementById("precision").value = msg.precision;
-          document.getElementById("lineWidth").value = msg.lineWidth? msg.lineWidth : 1;
-          selectedID = msg.selectedID? msg.selectedID : 'left-line';
+          document.getElementById("lineWidth").value = msg.lineWidth
+            ? msg.lineWidth
+            : 1;
+          selectedID = msg.selectedID ? msg.selectedID : "left-line";
+          document.getElementById("lineColor").value = msg.lineColor;
+          console.log("loaded", msg);
           dirPrep();
         }
       };
+
+      // tab functionality
+      const tabs = document.querySelectorAll(".tab");
+      const tabContents = document.querySelectorAll(".tab-content");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((item) => item.classList.remove("active"));
+          tabContents.forEach((item) => item.classList.remove("active"));
+
+          tab.classList.add("active");
+          const tabContent = document.querySelector(`#${tab.id}-content`);
+          tabContent.classList.add("active");
+        });
+      });
     </script>
   </body>
 </html>
