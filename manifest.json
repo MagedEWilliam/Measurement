@@ -1,8 +1,18 @@
 {
   "name": "Measurement",
   "id": "949750262028441524",
-  "editorType": ["figma"],
+  "editorType": [
+    "figma"
+  ],
   "api": "1.0.0",
   "main": "code.js",
-  "ui": "ui.html"
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://*.figma.com"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:3000"
+    ]
+  }
 }

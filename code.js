@@ -34,36 +34,36 @@ const saveSettings = (msg) => __awaiter(this, void 0, void 0, function* () {
 const recalculate = (msg) => __awaiter(this, void 0, void 0, function* () {
     figma.currentPage.selection.map((selectionNode) => {
         const color = figma.util.solidPaint(msg.lineColor);
-        selectionNode.children.filter((node) => __awaiter(this, void 0, void 0, function* () {
-            if (node.type === "TEXT") {
-                // @ts-ignore
-                yield figma.loadFontAsync(node.fontName);
-                node.fills = [color];
-                if (node) {
-                    console.log(selectionNode.width, selectionNode.height);
-                    const updatedText = Number(selectionNode.width * Number(msg.factor))
-                        .toFixed(Number(msg.precision))
-                        .toString() + msg.unit;
-                    node.autoRename = true;
-                    node.deleteCharacters(0, node.characters.length);
-                    node.insertCharacters(node.characters.length, updatedText, "BEFORE");
-                    node.characters = updatedText;
-                    const textName = "<-" +
-                        Number(selectionNode.width * Number(msg.factor))
+        if (selectionNode.type === "FRAME" && selectionNode.name.includes("->")) {
+            selectionNode.children.filter((node) => __awaiter(this, void 0, void 0, function* () {
+                if (node.type === "TEXT") {
+                    // @ts-ignore
+                    yield figma.loadFontAsync(node.fontName);
+                    node.fills = [color];
+                    if (node) {
+                        console.log(selectionNode.width, selectionNode.height);
+                        const updatedText = Number(selectionNode.width * Number(msg.factor))
                             .toFixed(Number(msg.precision))
-                            .toString() +
-                        msg.unit +
-                        "->";
-                    node.name = textName;
-                    selectionNode.name = textName;
+                            .toString() + msg.unit;
+                        node.autoRename = true;
+                        node.deleteCharacters(0, node.characters.length);
+                        node.insertCharacters(node.characters.length, updatedText, "BEFORE");
+                        node.characters = updatedText;
+                        const textName = "<-" +
+                            Number(selectionNode.width * Number(msg.factor))
+                                .toFixed(Number(msg.precision))
+                                .toString() +
+                            msg.unit +
+                            "->";
+                        node.name = textName;
+                        selectionNode.name = textName;
+                    }
                 }
-            }
-            else {
-                if (node) {
-                    node.children.filter((dimNode) => __awaiter(this, void 0, void 0, function* () {
+                else {
+                    node === null || node === void 0 ? void 0 : node.children.filter((dimNode) => __awaiter(this, void 0, void 0, function* () {
                         dimNode.strokes = [color];
                         dimNode.strokeWeight = Number(msg.lineWidth);
-                        if (dimNode.name.includes('ExtensionLine_')) {
+                        if (dimNode.name.includes("ExtensionLine_")) {
                             if (msg.withExtensionLine) {
                                 dimNode.opacity = 1;
                             }
@@ -71,12 +71,10 @@ const recalculate = (msg) => __awaiter(this, void 0, void 0, function* () {
                                 dimNode.opacity = 0;
                             }
                         }
-                        else {
-                        }
                     }));
                 }
-            }
-        }));
+            }));
+        }
     });
     // update localstorage
     saveSettings(msg);
@@ -139,17 +137,17 @@ const createLine = (msg) => __awaiter(this, void 0, void 0, function* () {
     }
     measurement.resize(100, 41);
     measurement.itemSpacing = 8;
-    if (msg.selectedID == 'left-line') {
+    if (msg.selectedID == "left-line") {
         measurement.rotation = 90;
         dimensionText.rotation = -90;
         measurement.resize(100, 60);
     }
-    else if (msg.selectedID == 'right-line') {
+    else if (msg.selectedID == "right-line") {
         measurement.rotation = -90;
         dimensionText.rotation = 90;
         measurement.resize(100, 60);
     }
-    else if (msg.selectedID == 'bottom-line') {
+    else if (msg.selectedID == "bottom-line") {
         measurement.rotation = 180;
         dimensionText.rotation = 180;
     }
@@ -166,40 +164,32 @@ const createLine = (msg) => __awaiter(this, void 0, void 0, function* () {
             .toFixed(Number(msg.precision))
             .toString();
         const unit = msg.unit;
-        if (msg.selectedID == 'left-line') {
+        if (msg.selectedID == "left-line") {
             measurement.resize(node.height, 78);
             measurement.x = node.x - measurement.height;
             measurement.y = node.y + node.height;
-            measurement.name = "<-" +
-                heightCalc
-                + unit + "->";
+            measurement.name = "<-" + heightCalc + unit + "->";
             yield dimensionText.insertCharacters(0, heightCalc + unit);
         }
-        else if (msg.selectedID == 'right-line') {
+        else if (msg.selectedID == "right-line") {
             measurement.resize(node.height, 78);
-            measurement.x = node.x + node.width + (measurement.height);
+            measurement.x = node.x + node.width + measurement.height;
             measurement.y = node.y;
-            measurement.name = "<-" +
-                heightCalc
-                + unit + "->";
+            measurement.name = "<-" + heightCalc + unit + "->";
             yield dimensionText.insertCharacters(0, heightCalc + unit);
         }
-        else if (msg.selectedID == 'bottom-line') {
+        else if (msg.selectedID == "bottom-line") {
             measurement.resize(node.width, 60);
             measurement.x = node.x + node.width;
-            measurement.y = node.y + node.height + (measurement.height);
-            measurement.name = "<-" +
-                widthCalc
-                + unit + "->";
+            measurement.y = node.y + node.height + measurement.height;
+            measurement.name = "<-" + widthCalc + unit + "->";
             yield dimensionText.insertCharacters(0, widthCalc + unit);
         }
-        else if (msg.selectedID == 'top-line') {
+        else if (msg.selectedID == "top-line") {
             measurement.resize(node.width, 60);
             measurement.x = node.x;
             measurement.y = node.y - measurement.height;
-            measurement.name = "<-" +
-                widthCalc
-                + unit + "->";
+            measurement.name = "<-" + widthCalc + unit + "->";
             yield dimensionText.insertCharacters(0, widthCalc + unit);
         }
     }));
